@@ -31,14 +31,24 @@ export const useFetchDiff = ({
       setIsLoading(true)
       setIsDone(false)
 
-      const [response] = await Promise.all([
-        fetch(getDiffURL({ packageName, language, fromVersion, toVersion })),
-        delay(300),
-      ])
+      try {
+        const [response] = await Promise.all([
+          fetch(getDiffURL({ packageName, language, fromVersion, toVersion })),
+          delay(300),
+        ])
 
-      const diff = await response.text()
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`)
+        }
 
-      setDiff(movePackageJsonToTop(parseDiff(diff)))
+        const data = await response.json()
+        const diff = atob(data.content)
+
+        setDiff(movePackageJsonToTop(parseDiff(diff)))
+      } catch (error) {
+        console.error('Failed to fetch diff:', error)
+        setDiff([])
+      }
 
       setIsLoading(false)
       setIsDone(true)

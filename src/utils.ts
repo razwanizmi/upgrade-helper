@@ -12,9 +12,11 @@ const getRNDiffRepository = ({ packageName }: { packageName: string }) =>
   RN_DIFF_REPOSITORIES[packageName]
 
 export const getReleasesFileURL = ({ packageName }: { packageName: string }) =>
-  `https://raw.githubusercontent.com/${getRNDiffRepository({
+  `https://api.github.com/repos/${getRNDiffRepository({
     packageName,
-  })}/master/${packageName === PACKAGE_NAMES.RNM ? 'RELEASES_MAC' : 'RELEASES'}`
+  })}/contents/${
+    packageName === PACKAGE_NAMES.RNM ? 'RELEASES_MAC' : 'RELEASES'
+  }`
 
 export const getDiffURL = ({
   packageName,
@@ -34,9 +36,9 @@ export const getDiffURL = ({
       ? `${language}/`
       : ''
 
-  return `https://raw.githubusercontent.com/${getRNDiffRepository({
+  return `https://api.github.com/repos/${getRNDiffRepository({
     packageName,
-  })}/diffs/diffs/${languageDir}${fromVersion}..${toVersion}.diff`
+  })}/contents/diffs/${languageDir}${fromVersion}..${toVersion}.diff?ref=diffs`
 }
 
 const getBranch = ({

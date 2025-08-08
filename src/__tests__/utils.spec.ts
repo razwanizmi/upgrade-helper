@@ -4,6 +4,7 @@ import {
   getVersionsContentInDiff,
   replaceAppDetails,
   getChangelogURL,
+  getDiffURL,
 } from '../utils'
 
 describe('getVersionsContentInDiff', () => {
@@ -68,6 +69,47 @@ describe('getChangelogURL', () => {
   ])('getChangelogURL("%s", "%s") -> %s', (packageName, version, url) => {
     expect(getChangelogURL({ packageName, version })).toEqual(url)
   })
+})
+
+describe('getDiffURL', () => {
+  const { RN, RNM, RNW } = PACKAGE_NAMES
+  test.each([
+    [
+      RN,
+      '',
+      '0.76.9',
+      '0.77.3',
+      'https://api.github.com/repos/react-native-community/rn-diff-purge/contents/diffs/0.76.9..0.77.3.diff?ref=diffs',
+    ],
+    [
+      RN,
+      '',
+      '0.70.0',
+      '0.71.0',
+      'https://api.github.com/repos/react-native-community/rn-diff-purge/contents/diffs/0.70.0..0.71.0.diff?ref=diffs',
+    ],
+    [
+      RNM,
+      '',
+      '0.70.0',
+      '0.71.0',
+      'https://api.github.com/repos/acoates-ms/rnw-diff/contents/diffs/mac/0.70.0..0.71.0.diff?ref=diffs',
+    ],
+    [
+      RNW,
+      'cpp',
+      '0.70.0',
+      '0.71.0',
+      'https://api.github.com/repos/acoates-ms/rnw-diff/contents/diffs/cpp/0.70.0..0.71.0.diff?ref=diffs',
+    ],
+  ])(
+    'getDiffURL("%s", "%s", "%s", "%s") -> %s',
+    (packageName, language, fromVersion, toVersion, expectedUrl) => {
+      expect(
+        getDiffURL({ packageName, language, fromVersion, toVersion })
+      ).toEqual(expectedUrl)
+    }
+  )
 })
 
 describe('replaceAppDetails ', () => {

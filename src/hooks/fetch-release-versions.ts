@@ -16,8 +16,9 @@ export const useFetchReleaseVersions = ({
       setIsDone(false)
 
       const response = await fetch(getReleasesFileURL({ packageName }))
+      const apiResponse = await response.json()
 
-      const releaseVersions = (await response.text())
+      const releaseVersions = atob(apiResponse.content)
         .split('\n')
         .filter(Boolean)
 
